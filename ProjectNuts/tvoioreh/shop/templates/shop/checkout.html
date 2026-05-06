@@ -1,0 +1,62 @@
+{# Страница оформления заказа: просмотр заказа, адрес доставки, подтверждение #}
+{% extends 'shop/base.html' %}
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<h1>Оформление заказа</h1>
+
+{% if items %}
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Ваш заказ:</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Цена</th>
+                            <th>Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }} шт.</td>
+                            <td>{{ item.product.price }} руб.</td>
+                            <td>{{ item.subtotal }} руб.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                            <td><strong>{{ total }} руб.</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Детали заказа</h5>
+                    <p><strong>Адрес доставки:</strong><br>{{ profile.address }}</p>
+                    <p><strong>Телефон:</strong><br>{{ profile.phone }}</p>
+                    <form method="post">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        <button type="submit" class="btn btn-success w-100">Подтвердить заказ</button>
+                    </form>
+                    <a href="/cart/" class="btn btn-secondary w-100 mt-2">Вернуться в корзину</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        <p>Ваша корзина пуста.</p>
+        <a href="/" class="btn btn-primary">Перейти к покупкам</a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,235 @@
+/* ============================================================
+   Кастомные стили интернет-магазина «Твой орех»
+   Подключаются после Bootstrap, переопределяют и дополняют его.
+   ============================================================ */
+
+/* ---------- Общие настройки (цветовая палитра) ---------- */
+:root {
+    --primary: #8B5E3C;          /* ореховый */
+    --primary-dark: #5D3A1A;     /* тёмно-ореховый для фона */
+    --secondary: #D4A373;        /* светлый ореховый */
+    --light-bg: #FEFAE0;         /* кремовый фон страницы */
+    --text: #3E2723;             /* тёмно-коричневый текст */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;           /* футер всегда внизу */
+    padding-bottom: 80px;        /* отступ для нижней панели браузера */
+}
+
+/* -------- Навигационная панель -------- */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: var(--primary-dark) !important;
+    padding: 0.75rem 1rem;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    color: #fff !important;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.85) !important;
+    transition: color 0.2s;
+}
+.nav-link:hover {
+    color: #fff !important;
+}
+
+/* Гамбургер-меню (мобильная кнопка) */
+.navbar-toggler {
+    border: 2px solid rgba(255,255,255,0.7);
+    padding: 0.25rem 0.5rem;
+}
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.4);
+}
+.navbar-toggler-icon {
+    /* Белая иконка с жирной обводкой для лучшей видимости */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.95)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* -------- Hero-секция (приветствие на главной) -------- */
+.hero-section {
+    background: linear-gradient(135deg, #F5E6D3 0%, #FFF8F0 100%);
+    border-radius: 16px;
+    padding: 3rem 2rem !important;
+    color: var(--text);
+    border: 1px solid #E6D5C3;
+}
+
+.hero-section h1 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+    font-weight: 800;
+}
+
+.hero-section .lead {
+    font-size: 1.25rem;
+    color: #5D3A1A;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Кнопка в hero-секции */
+.hero-section .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+.hero-section .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Кнопка "Сбросить" (появляется при активном поиске) */
+.hero-section .btn-outline-dark {
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+}
+.hero-section .btn-outline-dark:hover {
+    background-color: var(--primary-dark);
+    color: #fff;
+}
+
+/* -------- Форма поиска -------- */
+.hero-section .input-group {
+    max-width: 500px;
+    width: 100%;
+}
+
+.hero-section form .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(139, 94, 60, 0.25);
+}
+
+/* -------- Секция преимуществ (три блока) -------- */
+.features-section {
+    padding: 2rem 0;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.features-section h5 {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* -------- Карточки товаров -------- */
+.product-card {
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    background: #fff;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);           /* приподнимаем карточку */
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.card-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;                    /* изображение заполняет блок */
+    transition: transform 0.4s;
+}
+
+.product-card:hover .card-img-wrapper img {
+    transform: scale(1.05);               /* лёгкое увеличение при наведении */
+}
+
+/* Заглушка, если у товара нет фото */
+.no-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #adb5bd;
+}
+
+/* Оверлей "Быстрый просмотр" — появляется при наведении */
+.card-img-overlay {
+    background: rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.product-card:hover .card-img-overlay {
+    opacity: 1;
+}
+
+.card-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Зелёный цвет для цены */
+.text-success {
+    color: #6A994E !important;
+}
+
+/* -------- Секция "О магазине" -------- */
+.about-section {
+    background-color: #fff;
+    border-radius: 16px;
+    margin-top: 3rem;
+}
+.about-section h2 {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+.about-section p {
+    color: var(--text);
+}
+
+/* -------- Футер -------- */
+.footer {
+    margin-top: auto;
+    background-color: var(--primary-dark);
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+/* -------- Адаптивность -------- */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    .hero-section .lead {
+        font-size: 1rem;
+    }
+    .card-img-wrapper {
+        height: 180px;
+    }
+    body {
+        padding-bottom: 60px;
+    }
+}
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 2rem 1rem !important;
+    }
+}

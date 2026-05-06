@@ -1,0 +1,107 @@
+{# Главная страница: hero, преимущества, каталог товаров с поиском, о магазине #}
+{% extends 'shop/base.html' %}
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<!-- ===== Hero-секция (приветствие + поиск) ===== -->
+<section class="hero-section text-center py-5 mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Свежие орехи с доставкой</h1>
+        <p class="lead mb-4">Грецкие, миндаль, фундук, кешью и многое другое – прямо к вашему столу</p>
+        <a href="#catalog" class="btn btn-primary btn-lg px-5">Смотреть каталог</a>
+
+        <!-- Поиск товаров -->
+        <form class="mt-4 d-flex justify-content-center" method="get" action="#catalog">
+            <div class="input-group" style="max-width: 500px; width: 100%;">
+                <input class="form-control" type="text" name="q"
+                       placeholder="🔍 Найти орехи..." value="{{ query }}">
+                <button class="btn btn-primary px-4" type="submit">
+                    <i class="bi bi-search"></i> Найти
+                </button>
+                {% if query %}
+                    <a href="/" class="btn btn-outline-dark ms-2">✕ Сбросить</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- ===== Преимущества магазина ===== -->
+<section class="features-section mb-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">🌱</div>
+                <h5>100% натуральные</h5>
+                <p class="text-muted">Без консервантов и ГМО, только отборные орехи от проверенных фермеров.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">🚚</div>
+                <h5>Быстрая доставка</h5>
+                <p class="text-muted">Доставляем по всей России за 2-5 дней. Бережно упаковываем каждый заказ.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">💰</div>
+                <h5>Честные цены</h5>
+                <p class="text-muted">Работаем напрямую с производителями – вы платите за качество, а не за бренд.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Каталог товаров ===== -->
+<div id="catalog" class="container">
+    <h2 class="text-center mb-4">Наш ассортимент</h2>
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+            <div class="card product-card h-100 border-0 shadow-sm">
+                <div class="card-img-wrapper">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="no-image-placeholder">🌰</div>
+                    {% endif %}
+                    <div class="card-img-overlay d-flex align-items-end justify-content-center p-0">
+                        {# Ссылка на товар: если есть slug – по slug, иначе по ID #}
+                        <a href="/product/{% if product.slug %}{{ product.slug }}{% else %}id/{{ product.id }}{% endif %}/"
+                           class="btn btn-light btn-sm w-100 rounded-0 py-2 fw-bold">Быстрый просмотр</a>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small flex-grow-1">{{ product.description|truncatewords(12) }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="fs-4 fw-bold text-success">{{ product.price }} ₽</span>
+                        <a href="/cart/add/{{ product.id }}/" class="btn btn-outline-primary btn-sm" title="Добавить в корзину">🛒</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                {% if query %}
+                    По запросу «{{ query }}» ничего не найдено 😔
+                {% else %}
+                    Товары скоро появятся – заходите позже!
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ===== О магазине ===== -->
+<section class="about-section mt-5 py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2>О нашем магазине</h2>
+                <p class="lead">«Твой орех» — это семейная компания, которая с 2015 года занимается продажей свежих орехов и сухофруктов оптом и в розницу.</p>
+                <p>Мы лично отбираем каждый продукт, следим за условиями хранения и гарантируем свежесть. Наша миссия — сделать здоровые перекусы доступными каждому.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

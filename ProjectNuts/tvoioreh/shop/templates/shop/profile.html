@@ -1,0 +1,86 @@
+{# Личный кабинет: данные профиля, история заказов, возможность удалять позиции #}
+{% extends 'shop/base.html' %}
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<h1>Личный кабинет</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Мои данные</h5>
+                <p><strong>Имя:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Телефон:</strong> {{ profile.phone }}</p>
+                <p><strong>Адрес:</strong> {{ profile.address }}</p>
+                <a href="/profile/edit/" class="btn btn-primary">Редактировать</a>
+                <a href="/password-change/" class="btn btn-secondary">Сменить пароль</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h4>Мои заказы</h4>
+        {% if orders_with_items %}
+            {% for order_data in orders_with_items %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>Заказ #{{ order_data.order.id }}</strong>
+                    от {{ order_data.order.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    <span class="badge bg-{{ 'success' if order_data.order.status == 'completed' else 'warning' }}">
+                        {{ order_data.order.get_status_display() }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Товар</th>
+                                    <th>Цена</th>
+                                    <th>Кол-во</th>
+                                    <th>Сумма</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_data.order_items %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.price }} руб.</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.total }} руб.</td>
+                                    <td>
+                                        {% if order_data.order.status == 'pending' %}
+                                        {# Кнопка удаления только для заказов в обработке #}
+                                        <form method="post" action="/order-item/{{ item.id }}/delete/" style="display:inline;">
+                                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                                    <td><strong>{{ order_data.order.total_price }} руб.</strong></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <p><strong>Адрес доставки:</strong> {{ order_data.order.delivery_address }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                У вас пока нет заказов.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

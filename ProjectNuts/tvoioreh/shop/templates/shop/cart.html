@@ -1,0 +1,61 @@
+{# Страница корзины: список товаров, изменение количества, удаление, итоговая сумма #}
+{% extends 'shop/base.html' %}
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<h1>Корзина</h1>
+
+{% if items %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>
+                        <a href="/product/{{ item.product.slug }}/">{{ item.product.name }}</a>
+                    </td>
+                    <td>
+                        {# Форма для обновления количества товара #}
+                        <form action="/cart/update/{{ item.product.id }}/" method="post" class="d-inline">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="form-control w-50 d-inline">
+                            <button type="submit" class="btn btn-sm btn-secondary">Обновить</button>
+                        </form>
+                    </td>
+                    <td>{{ item.product.price }} руб.</td>
+                    <td>{{ item.subtotal }} руб.</td>
+                    <td>
+                        <a href="/cart/remove/{{ item.product.id }}/" class="btn btn-sm btn-danger">Удалить</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                    <td><strong>{{ total }} руб.</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="mt-3">
+        <a href="/checkout/" class="btn btn-primary">Оформить заказ</a>
+        <a href="/" class="btn btn-secondary">Продолжить покупки</a>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <p>Корзина пуста.</p>
+        <a href="/" class="btn btn-primary">Перейти к покупкам</a>
+    </div>
+{% endif %}
+{% endblock %}
