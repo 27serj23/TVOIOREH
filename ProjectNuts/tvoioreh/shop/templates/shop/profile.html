@@ -1,4 +1,3 @@
-{# Личный кабинет: данные профиля, история заказов, возможность удалять позиции #}
 {% extends 'shop/base.html' %}
 {% block title %}Личный кабинет{% endblock %}
 
@@ -53,7 +52,7 @@
                                     <td>{{ item.total }} руб.</td>
                                     <td>
                                         {% if order_data.order.status == 'pending' %}
-                                        {# Кнопка удаления только для заказов в обработке #}
+                                        <!-- Форма удаления позиции (уже была POST) -->
                                         <form method="post" action="/order-item/{{ item.id }}/delete/" style="display:inline;">
                                             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                                             <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
