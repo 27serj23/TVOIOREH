@@ -1,16 +1,14 @@
-{# Главная страница: hero, преимущества, каталог товаров с поиском, о магазине #}
 {% extends 'shop/base.html' %}
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-<!-- ===== Hero-секция (приветствие + поиск) ===== -->
 <section class="hero-section text-center py-5 mb-5">
     <div class="container">
         <h1 class="display-4 fw-bold">Свежие орехи с доставкой</h1>
         <p class="lead mb-4">Грецкие, миндаль, фундук, кешью и многое другое – прямо к вашему столу</p>
         <a href="#catalog" class="btn btn-primary btn-lg px-5">Смотреть каталог</a>
 
-        <!-- Поиск товаров -->
+        <!-- Поиск -->
         <form class="mt-4 d-flex justify-content-center" method="get" action="#catalog">
             <div class="input-group" style="max-width: 500px; width: 100%;">
                 <input class="form-control" type="text" name="q"
@@ -26,7 +24,7 @@
     </div>
 </section>
 
-<!-- ===== Преимущества магазина ===== -->
+<!-- Преимущества -->
 <section class="features-section mb-5">
     <div class="container">
         <div class="row g-4">
@@ -49,7 +47,7 @@
     </div>
 </section>
 
-<!-- ===== Каталог товаров ===== -->
+<!-- Каталог -->
 <div id="catalog" class="container">
     <h2 class="text-center mb-4">Наш ассортимент</h2>
     <div class="row g-4">
@@ -63,7 +61,6 @@
                         <div class="no-image-placeholder">🌰</div>
                     {% endif %}
                     <div class="card-img-overlay d-flex align-items-end justify-content-center p-0">
-                        {# Ссылка на товар: если есть slug – по slug, иначе по ID #}
                         <a href="/product/{% if product.slug %}{{ product.slug }}{% else %}id/{{ product.id }}{% endif %}/"
                            class="btn btn-light btn-sm w-100 rounded-0 py-2 fw-bold">Быстрый просмотр</a>
                     </div>
@@ -73,7 +70,11 @@
                     <p class="card-text text-muted small flex-grow-1">{{ product.description|truncatewords(12) }}</p>
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <span class="fs-4 fw-bold text-success">{{ product.price }} ₽</span>
-                        <a href="/cart/add/{{ product.id }}/" class="btn btn-outline-primary btn-sm" title="Добавить в корзину">🛒</a>
+                        <!-- Кнопка «В корзину» теперь отправляет POST -->
+                        <form action="/cart/add/{{ product.id }}/" method="post" class="d-inline">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            <button type="submit" class="btn btn-outline-primary btn-sm" title="Добавить в корзину">🛒</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -92,7 +93,7 @@
     </div>
 </div>
 
-<!-- ===== О магазине ===== -->
+<!-- О магазине -->
 <section class="about-section mt-5 py-5 bg-white">
     <div class="container">
         <div class="row align-items-center">
@@ -100,6 +101,9 @@
                 <h2>О нашем магазине</h2>
                 <p class="lead">«Твой орех» — это семейная компания, которая с 2015 года занимается продажей свежих орехов и сухофруктов оптом и в розницу.</p>
                 <p>Мы лично отбираем каждый продукт, следим за условиями хранения и гарантируем свежесть. Наша миссия — сделать здоровые перекусы доступными каждому.</p>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="/static/img/about.jpg" alt="О магазине" class="img-fluid rounded shadow-sm" style="max-height: 300px;">
             </div>
         </div>
     </div>
