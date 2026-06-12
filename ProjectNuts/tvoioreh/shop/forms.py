@@ -1,3 +1,7 @@
+"""
+Формы для регистрации и редактирования профиля.
+Формы только валидируют данные, бизнес-логика вынесена в сервисы/представления.
+"""
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -31,11 +35,7 @@ class UserRegistrationForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         if commit:
             user.save()
-            # Явно создаём или получаем профиль и заполняем поля
-            profile, created = Profile.objects.get_or_create(user=user)
-            profile.phone = self.cleaned_data['phone']
-            profile.address = self.cleaned_data['address']
-            profile.save()
+            # Профиль теперь создаётся в представлении register() через сервис
         return user
 
 
