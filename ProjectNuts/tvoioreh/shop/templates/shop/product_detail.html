@@ -1,4 +1,3 @@
-{# Страница отдельного товара: фото, описание, цена, кнопка добавления в корзину #}
 {% extends 'shop/base.html' %}
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -15,7 +14,11 @@
         <h1>{{ product.name }}</h1>
         <p>{{ product.description }}</p>
         <h3>{{ product.price }} руб.</h3>
-        <a href="/cart/add/{{ product.id }}/" class="btn btn-success btn-lg">Добавить в корзину</a>
+        <!-- Кнопка «Добавить в корзину» через POST -->
+        <form action="/cart/add/{{ product.id }}/" method="post" class="d-inline">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn-success btn-lg">Добавить в корзину</button>
+        </form>
         <a href="/" class="btn btn-secondary btn-lg">Назад к списку</a>
     </div>
 </div>

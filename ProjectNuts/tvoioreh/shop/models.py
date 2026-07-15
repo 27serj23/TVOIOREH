@@ -1,7 +1,10 @@
+"""
+Модели базы данных интернет-магазина «Твой орех».
+Содержит только структуру данных, без бизнес-логики.
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.utils.text import slugify
 
 
 class Product(models.Model):
@@ -13,18 +16,10 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name='Изображение')
 
     def save(self, *args, **kwargs):
-        """При сохранении автоматически генерируем slug из названия."""
-        new_slug = slugify(self.name)
-        if not self.slug or self.slug != new_slug:
-            self.slug = new_slug
-
-        # Обеспечиваем уникальность slug
-        original_slug = self.slug
-        counter = 1
-        while Product.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
-            self.slug = f"{original_slug}-{counter}"
-            counter += 1
-
+        """Генерация slug делегируется сервисному слою (импорт внутри метода)."""
+        if not self.slug:
+            from .services import generate_unique_slug
+            self.slug = generate_unique_slug(self.name, exclude_pk=self.pk)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -69,12 +64,6 @@ class Order(models.Model):
     def __str__(self):
         return f'Заказ #{self.id} от {self.user.username}'
 
-    def update_total(self):
-        """Пересчёт итоговой суммы на основе позиций заказа."""
-        total = sum(item.price * item.quantity for item in self.items.all())
-        self.total_price = total
-        self.save(update_fields=['total_price'])
-
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
@@ -86,17 +75,6 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена на момент покупки')
-
-    def save(self, *args, **kwargs):
-        """После сохранения позиции обновляем итог заказа."""
-        super().save(*args, **kwargs)
-        self.order.update_total()
-
-    def delete(self, *args, **kwargs):
-        """После удаления позиции также пересчитываем итог."""
-        order = self.order
-        super().delete(*args, **kwargs)
-        order.update_total()
 
     @property
     def item_total(self):
